@@ -1,0 +1,55 @@
+Name: Siran Cao
+email: scao34@myseneca.ca
+ID: 159235209
+Date: 01/22/2022
+
+
+What I have learned from this workshop:
+
+1.
+The key difference between external and internal linkage is about scope and connectivity. For example, we need to declare a global variable to represent tax rates and special discounts in the workshop.  We declared the global variable in module header file foodorder.h
+extern double g_taxrate;
+extern double g_dailydiscount;
+and initiated the value to zero in module .cpp file. Other modules can access that by simple #include "foodorder" file and the entire program can access and modify these variables without further altering which allows the program to declare and access the global variable all in a simple way. 
+On the other hand, internal linkage refers to the connection across different scopes within the same module. The name of the variable is declared within one module and only can be accessed throughout different scopes within the module. For example, we declared a double type called m_foodPrice in FoodOrder module and this data attribute can be used in any blocks in this module.
+
+
+2.
+The static variable is another essential part of memory allocation. The keyword static means the variable is allocated in the static memory segment not stored on the stack. And the program will allocate memory at compile-time, the scope of the static variable goes with the program, not the code block. 
+ostream& FoodOrder::display(ostream& os)const {
+		static int counter = 0;
+		if (*this) {
+			os.setf(ios::left);
+			os.setf(ios::fixed);
+			os.width(2);
+			os << ++counter << ". ";
+			......
+		}
+		else {
+			......
+		}
+		return os;
+	}
+
+In the display() function in the FoodOrder Class we declared a static int called counter inside. The value of this integer remains unchanged throughout the program because the memory address is statically allocated. Therefore we can keep tracking and modifying this number during the run-time of multiple files. It is an easy and handy way to manage certain shared resources or items.
+
+		static void alloCopy(char*& des, const char* src);
+
+Also, static functions are used in the workshop solution. We add a utility function called allCpy() in the FoodOrder Class as a static function. As we know a class contains data and data logic(functions/methods). Some of the logic such as the utility method is related to the class but not essential to the class. Therefore we can declare the function as static and make the function code stored and running in the static memory segment. A static class function can be accessed by other class attributes and functions, and it can access static variables within the function. But it cannot access other ordinary attributes in the class.
+
+
+3.
+There're some additional upgrades made in part2. First of all, we use char* to replace fix-length c-string char foodDesc[25]
+		char* m_foodDesc{};
+Use a pointer to hold a dynamically allocated memory and accept any length of the string.
+
+Because we declared a pointer in the class attributes the FoodOrder class becomes a class with a resource. Therefore the rule of three must be implicitly applied. Copy constructor, copy assignment, and destructor. 
+		FoodOrder(const FoodOrder& src);
+		FoodOrder& operator=(const FoodOrder& src);
+		~FoodOrder() {delete[] m_foodDesc;}
+
+	private:
+		operator bool()const;
+		static void alloCopy(char*& des, const char* src);
+Also, we add several private functions to make the FoodOrder module more convenient. Overload a bool() to determine if the object is valid. And a static function alloCopy() to wipe out the current string, and dynamically copy from another string.
+	
