@@ -1,0 +1,36 @@
+Name: Siran Cao
+email: scao34@myseneca.ca
+ID: 159235209
+Date: 01/29/2022
+
+What I have learned from this workshop
+
+1.
+In the TimedTask.h module we applied a simple approach to declare an array of nameless structures. 
+		struct {
+			std::string m_task;
+			std::string m_timeUnit;
+			std::chrono::steady_clock::duration m_duration;
+		} taskList[MAX_OBJ]{};
+Here we don't have to specify the struct in anther header file, instead, we use the above syntax to declare an anonymous struct or class to represent a specified "type". And then we applied the array identifier and length of the array. Therefore, we don't need to create every class/struct in header files and choose to use anonymous struct/class instead to make code simpler and easier. 
+
+2.
+Another simple knowledge: we can use size_t to represent the keyword "unsigned int". size_t is a build-in class in C++ and is quite useful when applied to many situations.
+In addition, when we deal with a class holding a dynamic array like ProteinDatabase. This type of object usually holds a pointer to a dynamic memory and an unsigned integer to track the size of the array. 
+		std::string* m_proteinArr{};
+		size_t m_size = 0;
+To ensure safety, we set the initial value of this dynamic array class to nullptr and a size of 0. A default constructor will set the instance to an empty state and a constructor with an argument will populate the object by allocation memories and set the default array to a new size. 
+
+3.
+Another essential part of this workshop is about applying the rule of five, which are: copy constructor, copy assignment, move constructor, move assignment, and destructor. Any class associated with a resource must specify "the rule of five" explicitly, in order to avoid memory leak.
+		ProteinDatabase(const ProteinDatabase& src);
+		ProteinDatabase& operator=(const ProteinDatabase& src);
+		ProteinDatabase(ProteinDatabase&& src); //move constructor
+		ProteinDatabase& operator=(ProteinDatabase&& src); //move assignment
+		virtual ~ProteinDatabase();
+Unlike copy constructor receiving lvalue, we add move constructor and assignment operator taking an rvalue as a parameter by using the syntax: 
+lvalue: const ProteinDatabase& src
+rvalue: ProteinDatabase&& src
+The lvalue means the value on the left side usually a variable or something that has been declared. Here we use const [type]& src to represent send a constant reference of an object into the parameters.
+Differently, the rvalue refers to the value on the right side of the expression usually a value.
+Here, we can create an rvalue by using move(src) and using this as an argument in the move constructor and assignment operator. With the help of that, we can simplify the process of a dynamic copy, only transfer the ownership (or target) of the pointer.

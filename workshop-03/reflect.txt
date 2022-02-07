@@ -1,0 +1,37 @@
+Name: Siran Cao
+email: scao34@myseneca.ca
+ID: 159235209
+Date: 02/06/2022
+
+
+1.Why did we put template modules only in the header file?
+In C++ the coding rules require us to put all the codes and implementation of templates in the header file. And it is the most common and convenient portable solution when implementing templates A template is not like a function that can be compiled into byte code. It is just a pattern to generate such a function. If you put a template on its own into a *.cpp file, there is nothing to compile. Moreover, the explicit instantiation is actually not a template, but the starting point to make a function out of the template which ends up in the *.obj file.
+
+
+
+2. Explain modifications on the Pair module
+	Pair(const std::string& key = "", const std::string& value = "");
+Add default constructor to Pair class. A constructor with parameters is already provided in the codes. The compilor requires a explicit defualt constructor if other constructor are given.
+
+	std::ostream& display(std::ostream& os = std::cout)const;
+Add a display member function for Pair class and receives std::cout by default. This function can be called and insert into operator << and display "Key" "Value" string in certain format.
+
+	std::ostream& operator<<(std::ostream& os, const Pair& src);
+Overload the operator<< outside the class defition. since this is a helper function. The operator helps us display the Pair object by overloading << symbol. 
+
+	bool operator==(const Pair& ro);
+The overloaded operator== compares two Pair object and redefine the logic of == this function is critial for the coming template since we are compare each elements in the arrya to avoid duplicates. We have to explicitly define the compareation between strings otherwise the compiler cannot deal with this user-defined data type.
+
+
+3. Apply inclusion polymorphism by using virual function
+		virtual bool add(const T& item);
+The Set class is derived from Collection class. The idea of inclusion polymorphism simply means the Set class could inheited all the public methods of Collection or it can define its logic by using the same name of the member function. In this case Set class could redefine add() function and put reduncy check in the function. And we declare the add() with vritual in base class to make this methoid virtual function. Therefore the same function could have multiple performace and must perform based the latest version in the hierarchy.
+
+
+4. The reason for specializing the add() member function.
+In the Set
+	template<>
+	bool Set<double>::add(const double& item) {
+...
+}
+The Set class is the template designed for all fundamental types. However some of the types like double could not perfectly implement the logic of add() function. Becasue it is hard to use == operator to compare if two floting-point number are completely equal. (For example 2.001 vs. 2.011 ) Therefore a specification is needed to defines these exceptions to a template definition of that function. 
