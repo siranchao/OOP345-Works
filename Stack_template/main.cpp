@@ -1,17 +1,16 @@
 #include <iostream>
-#include "Stack_module.h"
+//#include "Stack_module.h"
+#include "Stack_template.h"
 
 using namespace sdds;
 
 int main() {
-	Stack S;
-	S.push(2);
-	S.push(4);
-	S.push(5);
-	S.push(6);
-	S.push(8);
-	S.push(10);
-	S.push(12);
+	Stack<double> S;
+	S.push(5.12);
+	S.push(6.12);
+	S.push(8.66);
+	S.push(10.9);
+	S.push(12.15);
 	for (int i = 0; i < 4; i++) {
 		std::cout << S.pop() << std::endl;
 	}
