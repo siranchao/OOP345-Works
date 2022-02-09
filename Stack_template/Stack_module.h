@@ -49,7 +49,11 @@ namespace sdds {
 			return m_top != nullptr;
 		}
 
-
+		void operator ~() {
+			while (m_top) {
+				pop();
+			}
+		}
 
 
 

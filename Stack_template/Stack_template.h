@@ -10,9 +10,8 @@ namespace sdds {
 		T m_data;
 		Node<T>* m_next{};
 		friend class Stack<T>;
-		Node(T data, Node<T>* next) {
-			m_data = data;
-			m_next = next;
+		Node(T data, Node<T>* next) : m_data(data), m_next(next) {
+			//default
 		}
 	};
 
@@ -24,6 +23,38 @@ namespace sdds {
 		Stack() {
 			//default empty
 		};
+
+		//adding rule of five
+		Stack(Stack<T>& src) {
+			*this = src;
+		}
+		Stack<T>& operator=(Stack<T>& src) {
+			if (this != &src) {
+				~*this;
+				m_top = src.m_top;
+				m_depth = src.m_depth;
+				src.m_top = nullptr;
+				src.m_depth = 0;
+			}
+			return *this;
+		}
+		Stack(const Stack<T>&& src) {
+			*this = std::move(src);
+		}
+		Stack<T>& operator=(Stack<T>&& src) {
+			if (this != &src) {
+				~*this;
+				Stack<T> temp;
+				while (src.m_depth > 0) {
+					temp.push(src.pop());
+				}
+				while (temp.m_depth > 0) {
+					push(temp.pop());
+				}
+				src.m_top = nullptr;
+			}
+			return *this;
+		}
 		virtual ~Stack() {
 			Node<T>* todel = m_top;
 			while (m_top != nullptr) {
@@ -40,11 +71,14 @@ namespace sdds {
 		}
 
 		T pop() {
-			T data = m_top->m_data;
-			Node<T>* del = m_top;
-			m_top = m_top->m_next;
-			delete del;
-			m_depth--;
+			T data{};
+			if (!isEmpty()) {
+				data = m_top->m_data;
+				Node<T>* del = m_top;
+				m_top = m_top->m_next;
+				delete del;
+				m_depth--;
+			}
 			return data;
 		}
 
@@ -56,6 +90,11 @@ namespace sdds {
 		}
 		size_t depth()const {
 			return m_depth;
+		}
+		void operator ~() {
+			while (m_top) {
+				pop();
+			}
 		}
 
 	};
