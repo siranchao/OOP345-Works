@@ -1,0 +1,31 @@
+Name: Siran Cao
+email: scao34@myseneca.ca
+ID: 159235209
+Date: 02/21/2022
+
+1. Identify which components of your solution are the observers, subjects, and the events per the observer pattern. You can read online about the Observer Pattern. Justify your answer!
+
+In Observer design pattern, there is a Subject that maintains the list of Observers that are waiting for any update on the Subject. Once there is an update in Subject it notifies all the observers for the change.
+E.g. In real life, students are waiting for the result of their test. Here students are the observers and test is the subject. Once the result of test is known, testing organization notifies all the students about their result.
+The most popular use of Observer pattern is in Model View Controller (MVC) architectural pattern.Main issue with Observer pattern is that it can cause memory leaks. The subject holds a strong reference to observers. If observers are not de-registered in time, it can lead to memory leak.
+
+
+
+2. Why did we need to use an std::function object? What are the pros and cons of using it (mention at least 1 of each)?
+
+By definition, std::function is a type erasure object. That means it erases the details of how some operations happen, and provides a uniform run time interface to them. For std::function, the primary1 operations are copy/move, destruction, and 'invocation' with operator() -- the 'function like call operator'. In another words, it means that std::function can contain almost any object that acts like a function pointer in how you call it.
+The signature it supports goes inside the angle brackets: std::function<void()> takes zero arguments and returns nothing. std::function< double( int, int ) > takes two int arguments and returns double. In general, std::function supports storing any function-like object whose arguments can be converted-from its argument list, and whose return value can be converted-to its return value.
+
+
+
+3. How can C++ templates be used instead of an std::function object to store a function?
+
+If we talking about C++ templates vs. std::function objects, there are certain difference between them. In general, if you are facing a design situation that gives you a choice, use templates. I stressed the word design because I think what you need to focus on is the distinction between the use cases of std::function and templates, which are pretty different.
+
+Normally the choice of templates is just an instance of a wider principle: try to specify as many constraints as possible at compile-time. The rationale is simple: if you can catch an error, or a type mismatch, even before your program is generated, you won't ship a buggy program to your customer. Moreover, as you correctly pointed out, calls to template functions are resolved statically (i.e. at compile time), so the compiler has all the necessary information to optimize and possibly inline the code (which would not be possible if the call were performed through a vtable).
+
+
+
+4. Your code reports and handles different types of exceptions. How would you modify your code to only report exceptions of the same data type and handle them appropriately? How would you differentiate between the different exceptions in this case?
+
+The best strategy is always catching exception by references. Catching by value is problematic in the face of inheritance hierarchies. Suppose for your example that there is another type MyException which inherits from CustomException and overrides items like an error code. If a MyException type was thrown your catch block would cause it to be converted to a CustomException instance which would cause the error code to change.

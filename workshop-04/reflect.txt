@@ -1,0 +1,52 @@
+Name: Siran Cao
+email: scao34@myseneca.ca
+ID: 159235209
+Date: 02/13/2022
+
+
+1. Explain in the reflection what is the relationship between Child and Toy, and what is the relationship between Child and the array of pointers.
+
+The relationship between Child and Toy is an association relationship, it does not involve any ownership of one and another and each type is acting independently here. The Child class has a two-dimensional array (array of pointers) of Toy type to record toys that hold by each child. Any change of the Child will not affect Toy since each element of the array was copied by the copy constructor of a Toy object. Any status changed during run-time on each Toy will also not affect the Child. 
+In addition, the Child is sharing a composition relationship with the array of pointers. Because the const sdds::Toy** m_toyPtrs{}; is one of the attributes (data members) of the Child class. In order to initiate the Child class, we have to specify the array and could use forward declaration on the Toy class.
+
+
+
+
+2. Explain in the reflection what is the relationship between ConfirmOrder and Toy, and what is the relationship between ConfirmOrder and the array of pointers.
+
+There is an aggregational relationship between ConfirmOrder and Toy. This means both classes have no access to manage the creation or destruction of the object. And normally it represents a many-to-many relationship in practice. A ConfirmOrder could contain many Toy objects, and one Toy could be listed into many ConfirmOrders. In our workshop, the ConfirmOrders class hold a two-dimensional array of Toy type which register a list of Toys by their address in memory, for example:
+		const sdds::Toy** m_toys{a, b, c, d, e}
+a -> Toy a (dynamically allocated in main.cpp)
+b -> Toy b (dynamically allocated in main.cpp)
+......
+the array hold pointer(address) as elements and each element points and a dynamically allocated memory in the heap. Even if the Child class was destroyed only the pointers in the array were cleaned the actual memory allocated was intact. Same for the Toy class, any changes to the Toys will not affect the ConfirmOrder class, the array is still working perfectly handling these memory addresses.
+The relationship between ConfirmOrder and the array of pointers is simply composition. As one of the attributes of the ConfirmOrder class the array was created by default (nullptr) along with the class and it will be destroyed with the death of the ConfirmOrder object.
+
+
+
+3.The difference between the implementations of composition and aggregation. Note that both classes Child and ConfirmOrder have an attribute of type const Toy** and yet they are in different relationships with class Toy. Discuss!
+
+One of the key differences when we implementations of composition and aggregation are whether we should use a copy constructor or simply copy the address. In the case of Toy and Child class, their associated relationship requires both classes should be created and handled independently without any side affects. Therefore:
+		const sdds::Toy** m_toys{a, b, c, d, e}
+a -> new Toy (*src.a) (dynamically allocate a duplicate object)
+b -> new Toy (*src.b) (dynamically allocated  a duplicate object)
+.......
+A similar array of pointers is holding the duplications of designated Toys and both classes are relatively independent.
+
+In the case of Toy and ConfirmOrder class, the aggregation relationship is demonstrating a mutual inclusion status between each class. This means any changes to the class will affect the other one. But both classes are not able to control the creation and destruction of each other.
+		const sdds::Toy** m_toys{a, b, c, d, e}
+a -> Toy a1 (dynamically allocated in main.cpp)
+b -> Toy b1 (dynamically allocated in main.cpp)
+......
+Toy a2 ----> status changed
+Toy b2 ----> status changed
+......
+		const sdds::Toy** m_toys{a2, b2, c, d, e}
+
+
+4. The difference between the implementations of move and copy functions in composition and aggregation.
+In composition:
+
+If it is a pointer version, deep copying and assignment are required and we must code the copy constructor, assignment operator, and destructor. The constructor of the composer class creates the dependent object, the assignment operator destroys the old dependent object and creates a new one, and the destructor destroys the dependent object. 
+In aggregation:
+We have to be more careful and make sure the deep copy in the copy constructor and assignment operator will not affect the nature of another class. And the move operator 100% transfers the ownership of the resources but does not change the nature of the resources.
