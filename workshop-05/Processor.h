@@ -33,17 +33,17 @@ namespace sdds {
 		virtual ~Processor();
 
 		//upgrade
-		//void on_complete(void (*fnObj1)(CentralUnit<Processor>& host, Processor* processor));
-		//void on_error(std::function<void(Processor* processor)> fnObj2);
-		void on_complete();
-		void on_error();
+		void on_complete(void (*fnObj1)(CentralUnit<Processor>& host, Processor* processor));
+		void on_error(std::function<void(Processor* processor)> fnObj2);
+		//void on_complete();
+		//void on_error();
 		void operator()();
 		Job* free();
 		std::ostream& display(std::ostream& os = std::cout)const;
 	};
 
 	std::ostream& operator<<(std::ostream& os, const Processor& src);
-	void complete_job(CentralUnit<Processor>& cpu, Processor* unit);
+
 
 }
 #endif // !SDDS_PROCESSOR_H__

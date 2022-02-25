@@ -21,13 +21,12 @@ namespace sdds {
 	class CentralUnit {
 	public:
 		std::ostream& log = std::cout;
-		size_t m_count{};//////////////////////////////
 	private:
 		std::string m_type{};
 		T** m_items{};
 		Job* m_jobs[4]{};
 		size_t m_size{};
-
+		size_t m_count{};
 
 	public:
 		CentralUnit();
@@ -42,16 +41,15 @@ namespace sdds {
 		bool has_jobs()const;
 		int get_available_units()const;
 		//upgrade
-		//void complete_job(CentralUnit<T>& cpu, T* unit);
 		void run();
 		CentralUnit<T>& operator+=(T* unit);
 		T* operator[](const char* jobTitle)const;
 		void display()const;
+		static void complete_job(CentralUnit<T>& cpu, T* unit);
 		
 	private:
 		std::string& trim(std::string& str)const;
 		void operator~();
-
 	};
 
 	template<typename T>
@@ -100,13 +98,13 @@ namespace sdds {
 				//construct processing units
 				m_items[i] = new T(this, unitType, unitName, capacity);
 
-				//m_items[i]->on_complete(&complete_job);
-				//m_items[i]->on_error([&](T* unit)->void {
-				//	auto jobPtr = unit->free();
-				//	log << "Failed to complete job" << jobPtr->name() << std::endl;
-				//	log << get_available_units() << " units available" << std::endl;
-				//	delete jobPtr;
-				//});
+				m_items[i]->on_complete(CentralUnit<T>::complete_job);
+				m_items[i]->on_error([&](T* unit)->void {
+					auto jobPtr = unit->free();
+					log << "Failed to complete job" << jobPtr->name() << std::endl;
+					log << get_available_units() << " units available" << std::endl;
+					delete jobPtr;
+				});
 
 				i++;
 			}
@@ -137,16 +135,17 @@ namespace sdds {
 		if (m_count > 0) {
 			for (size_t i = 0; i < m_count; i++) {
 				delete m_jobs[i];
+				m_jobs[i] = nullptr;
 			}
 		}
 		//clear unit list
 		if (m_size > 0) {
 			for (size_t i = 0; i < m_size; i++) {
 				delete m_items[i];
+				m_items[i] = nullptr;
 			}
 		}
 	}
-
 
 	template<typename T>
 	CentralUnit<T>::CentralUnit(const CentralUnit<T>& src) {
@@ -157,7 +156,6 @@ namespace sdds {
 	CentralUnit<T>::CentralUnit(CentralUnit<T>&& src) {
 		*this = std::move(src);
 	}
-
 	template<typename T>
 	CentralUnit<T>& CentralUnit<T>::operator=(CentralUnit<T>&& src) {
 		if (this != &src) {
@@ -234,7 +232,6 @@ namespace sdds {
 	//	delete jobPtr;
 	//}
 
-
 	template<typename T>
 	CentralUnit<T>& CentralUnit<T>::operator+=(T* unit) {
 		if (unit) {
@@ -290,6 +287,14 @@ namespace sdds {
 		for (size_t i = 0; i < m_size; i++) {
 			log << "[000" << i + 1 << "] " << *m_items[i] << std::endl;
 		}
+	}
+
+	template<typename T>
+	void CentralUnit<T>::complete_job(CentralUnit<T>& cpu, T* unit) {
+		auto jobPtr = unit->free();
+		cpu.log << "[COMPLETE] " << *jobPtr << " using " << *unit << std::endl;
+		cpu.log << cpu.get_available_units() << " units available." << std::endl;
+		delete jobPtr;
 	}
 
 

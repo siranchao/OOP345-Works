@@ -19,8 +19,8 @@ namespace sdds {
 		m_brand = unitType;
 		m_code = unitName;
 		m_power = capacity;
-		on_complete();
-		on_error();
+		//on_complete();
+		//on_error();
 	}
 
 	void Processor::run() {
@@ -78,24 +78,24 @@ namespace sdds {
 	}
 
 	//upgrade
-	//void Processor::on_complete(void (*fnObj1)(CentralUnit<Processor>& host, Processor* processor)) {
-	//	m_fnObj1 = fnObj1;
-	//}
-	//void Processor::on_error(std::function<void(Processor* processor)> fnObj2) {
-	//	m_fnObj2 = fnObj2;
-	//}
+	void Processor::on_complete(void (*fnObj1)(CentralUnit<Processor>& host, Processor* processor)) {
+		m_fnObj1 = fnObj1;
+	}
+	void Processor::on_error(std::function<void(Processor* processor)> fnObj2) {
+		m_fnObj2 = fnObj2;
+	}
 
-	void Processor::on_complete() {
-		m_fnObj1 = &complete_job;
-	}
-	void Processor::on_error() {
-		m_fnObj2 = [&](Processor* unit)->void {
-			auto jobPtr = unit->free();
-			m_host->log << "Failed to complete job " << jobPtr->name() << std::endl;
-			m_host->log << m_host->get_available_units() << " units available." << std::endl;
-			delete jobPtr;
-		};
-	}
+	//void Processor::on_complete() {
+	//	m_fnObj1 = &complete_job;
+	//}
+	//void Processor::on_error() {
+	//	m_fnObj2 = [&](Processor* unit)->void {
+	//		auto jobPtr = unit->free();
+	//		m_host->log << "Failed to complete job " << jobPtr->name() << std::endl;
+	//		m_host->log << m_host->get_available_units() << " units available." << std::endl;
+	//		delete jobPtr;
+	//	};
+	//}
 
 	void Processor::operator()() {
 		if (*this && !m_current->is_complete()) {
@@ -142,12 +142,7 @@ namespace sdds {
 		return src.display(os);
 	}
 
-	void complete_job(CentralUnit<Processor>& cpu, Processor* unit) {
-		auto jobPtr = unit->free();
-		cpu.log << "[COMPLETE] " << *jobPtr << " using " << *unit << std::endl;
-		cpu.log << cpu.get_available_units() << " units available." << std::endl;
-		delete jobPtr;
-	}
+
 
 
 

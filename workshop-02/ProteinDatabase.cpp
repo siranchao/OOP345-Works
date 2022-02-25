@@ -59,7 +59,7 @@ namespace sdds {
 	////rule of five
 
 	ProteinDatabase::ProteinDatabase(const ProteinDatabase& src) {
-		operator=(src);
+		*this = src;
 	}
 
 	ProteinDatabase& ProteinDatabase::operator=(const ProteinDatabase& src) {
@@ -75,7 +75,7 @@ namespace sdds {
 	}
 
 	ProteinDatabase::ProteinDatabase(ProteinDatabase&& src) {
-		operator=(std::move(src));
+		*this = std::move(src);
 	}
 
 	ProteinDatabase& ProteinDatabase::operator=(ProteinDatabase&& src) {
