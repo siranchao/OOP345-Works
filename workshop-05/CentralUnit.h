@@ -245,13 +245,14 @@ namespace sdds {
 			m_items[m_size] = unit;
 			m_size++;
 			//assign callbacks
-			//m_items[m_size]->on_complete(&complete_job);
-			//m_items[m_size]->on_error([&](T* unit)->void {
-			//	auto jobPtr = unit->free();
-			//	log << "Failed to complete job" << jobPtr->name() << std::endl;
-			//	log << get_available_units() << " units available" << std::endl;
-			//	delete jobPtr;
-			//});
+			m_items[m_size]->on_complete(CentralUnit<T>::complete_job);
+			m_items[m_size]->on_error([&](T* unit)->void {
+				auto jobPtr = unit->free();
+				log << "Failed to complete job" << jobPtr->name() << std::endl;
+				log << get_available_units() << " units available" << std::endl;
+				delete jobPtr;
+			});
+
 		}
 		else {
 			throw std::runtime_error("Error");
