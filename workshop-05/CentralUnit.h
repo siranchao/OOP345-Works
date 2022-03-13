@@ -242,7 +242,7 @@ namespace sdds {
 			}
 			delete[] m_items;
 			m_items = temp;
-			m_items[m_size] = unit;
+			0
 			m_size++;
 			//assign callbacks
 			m_items[m_size]->on_complete(CentralUnit<T>::complete_job);

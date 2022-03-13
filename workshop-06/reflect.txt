@@ -1,0 +1,27 @@
+Name: Siran Cao
+email: scao34@myseneca.ca
+ID: 159235209
+Date: 03/13/2022
+
+
+1.Why do you need to deallocate the dynamically allocated memory in your vector of resources?
+
+The module of Directory is actually represented a encapsulated vector container which contains many Resource pointers. In this case each Directory contains multiple Resource pointers, and each pointer is directed to a certain resource in memory (could be a File or another Directory). 
+The workshop basically initiated all the resources dynamically and using polymorphism concept. For example, we use base class pointer Resource* ptr to allocate memory and instantiate object for both File and Directory. And all these dynamically allocated resources are in the heap and needs to be deallocated once the container class is about to die. Otherwise, there will be mass memory leak.
+         	 Resource* newRes{};
+               newRes = new Directory(component);
+               newRes = new Directory(component);
+
+
+
+2.To call specific functions for a Directory object stored in a Resource*, what special C++ operation did you have to do and why?
+
+We use one of the most important features of object-oriented programming that is Polymorphism. The idea of polymorphism is simply calling the same method but with different performance. Polymorphism can be carried in many ways like function overloading, templates, or virtual function. In this workshop we applied this concept by virtual functions.
+The base class Resource is a interface only declared some core behaviors but no definitions. And most importantly Resource class making these common behaviors like name(), count(), type() ect. virtual functions. This means the derived class Directory and File can implement same method with different meanings and when we use a base class pointer to call derived class objects, the polymorphic object will automatically call the latest version of methods. In simple words: when we use Resource* ptr to represent either a Directory or a File, we can call different method based on what specific this pointer represented.
+
+
+
+3.In this workshop you had to use std::vector<sdds::Resource*> to store a collection of filesystem resources as pointers. Could you have used std::vector<sdds::Resource> instead? Justify your answer!
+
+No, we cannot do that, because theocratically speaking the Resource class cannot be created since it is an abstract class (or we can consider it as an interface). Therefore, we cannot declare a container of Resource type that contain object of Resources. But we can use the alternative approach to make the container storing Resources pointers. Since the Resource class is a base class and according to the idea of polymorphism the base class pointer could be used and redirect to any derived class. Thus, we can use resource pointers to either represent File or Directory and allocate memory dynamically by these pointers. This approach is very convenient and handy when dealing with multiple classes in the hierarchy. And using purely pointer will reduce the memory size of each object, saves space in stack and improve program efficiency.
+
