@@ -1,0 +1,37 @@
+Name: Siran Cao
+email: scao34@myseneca.ca
+ID: 159235209
+Date: 03/19/2022
+
+
+1. list all the STL functions that you have used in this workshop; explain your reasoning for choosing each one, and not another.
+
+1).In the void display(std::ostream& out)const we use for_each functions to implement our logic. The purpose of display() function is to iterate every element within the container and call insertion operator to display its information. Instead of using for loop (or range-based for loop), the STL for_each can loop over a container and apply a specific callback function to each element (use lambda). The same function can also be used in the calculation of total death and cases. Similarly, we loop over the entire container and accumulate numbers by visiting each individual Covid record.
+
+2).In the void CovidCollection::sort(std::string field) function we use sort() STL function to sort all the elements in the container based on the specific name given. 
+std::sort(m_collection.begin(), m_collection.end(), [](const Covid& a, const Covid& b) {return a.m_country < b.m_country; });
+For example, when the case is sorting the county field, the STL function will iterate every element within the container (in this case from begging to the end). Normally if the container type is <int><double>etc. we don't need to specify anything and the sort() function will do the job. But in this workshop, we need to compare strings in alphabets orders, therefore the following lambda expression is required to identify the comparation logic between two elements.
+
+3).In the void cleanList(); function, we use find_if() STL function to implement our logic. The purpose of this function is to find out any Covid records that contains variant named “[None]”. In this case we can use find_if() function to search the iterator of matched elements. Also, since the find_if only return the first iterator matches, we have to use while loop to keep finding the target elements if there are multiple records. 
+
+4).In the bool inCollection(std::string varName)const function, the any_of() function is used. And this function simply return a bool value that tells us if there is any of the element in the container matches the condition. In addition, all_of() means every element in the container matches the condition. And none_of() means none of the element in the container matches the condition.
+
+5).std::list<Covid> getListForCountry(std::string country)const
+std::list<Covid> getListForVariant(std::string variant)const
+Both functions implement its logic using copy_if() function. The copy_if() is like a filter function that fileting every element in the container and put then in a new container. In this workshop the function will looking for the Covid cases that matching the given name and put then in a list<Covid>
+
+
+
+2. present the advantages of using STL algorithms vs. implementing the functionality by yourself using loops.
+
+In most of the cases, using STL algorithms are much more efficient and convenient than designing functions by ourselves. Because all these STL function have been tested and massively used by millions of programs and numbers of programmers. Thus they are more powerful reliable and safe. Although in our workshop we can use for loop to iterate container in many situations but it has very low efficiency in terms of good coding design. Almost every STL function involved iterating elements in the container, use for loop everywhere is not a efficient and good design, instead the STL function already create good coding design for user and encapsulated in the library which is easy to find  and use, and save a lot of time for us. 
+
+
+
+3. the function that sorts the collection of covids receives as a parameter the field name to use; this can create errors if the client specifies an invalid field (or misspells it). How would you redesign that function to prevent the client to specify an invalid string, allowing any error to be detected by the compiler?
+
+There are many way to address this issue, the better practice is using Enumerations class and take enum class as parameter. Also, since the current parameters are purely string hard coding by users that may case invalid filed, we need to add a error handling code in our sort() function. In this case if the receiving argument is beyond given range we throw a exception to the program to report the error. 
+throw std::invalid_argument("Wrong sorting field.");
+
+
+
