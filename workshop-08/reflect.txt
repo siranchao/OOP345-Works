@@ -1,0 +1,64 @@
+Name: Siran Cao
+email: scao34@myseneca.ca
+ID: 159235209
+Date: 03/26/2022
+
+
+The advantage that smart-pointer syntax provides. Use example from your code to support your explanation. the difference between raw and smart pointer syntax in your solution.
+
+
+In most of the cases when developing C++ program, we find that pointers are difficult to handle with and they are very fragile because pointer are directly referring to memory allocation and deletion. Since C++ does not perfectly support a garbage collection mechanism, programmer have to manually delete pointer every time they allocate NEW memories. Therefore, it is very often and easy to forget use release the pointer, and it causes memory leaks. 
+And sometimes even if we do remember to call delete every time we allocate new memory on heap, memory leak still will happen because the garbage collection of raw pointers doesn’t support throw exceptions situations. In other words, once we use a raw pointer to allocate memory dynamically on heap, the raw pointer will not be released when there is an exception are throwed. The program will throw the exception and the delete process will be ignored. 
+
+In our workshop-part1, the writeRaw() function will encounter the exact problem.
+
+GeneratingList<EmployeeWage> writeRaw(const GeneratingList<Employee>& emp, const GeneratingList<Salary>& sal) {
+	GeneratingList<EmployeeWage> activeEmp;
+	for (size_t i = 0; i < emp.size(); i++) {
+		bool found = false;
+		double salary{};
+		for (size_t k = 0; k < sal.size() && !found; k++) {
+			if (emp[i].id == sal[k].id) {
+				found = true;
+				salary = sal[k].salary;
+			}
+		}
+
+		if (found) {
+			EmployeeWage* ptr = new EmployeeWage(emp[i].name, salary);
+			try {
+				ptr->rangeValidator();
+			}
+			catch (const string& msg) {
+				delete ptr;
+				throw std::string("*** Employees salaray range is not valid");
+			}
+
+			if (emp.checksin(emp[i].id)) {
+				activeEmp += ptr;
+			}
+			else {
+				delete ptr;
+				throw std::string("Invalid SIN");
+			}
+			delete ptr;
+		}
+	}
+	return activeEmp;
+}
+
+As the code block show above, every time we find a active record in the list, we generated a new EmployeeWage object dynamically on heap by a raw pointer. And then we validate this object to check if it can be passed in the container. And finally delete the raw pointer at the end of the loop to avoid memory leak. However, if we not using try – catch block but directly write ptr->rangeValidator()instead. The line of code may throw a exception if the salary range is invalid and the code block terminated. The last line delete ptr; will not be executed therefore the latest object we create are lost in memory. 
+
+Use smart pointer can resolve these kinds of situation more easily and efficiently. As we know smart pointers are template object encapsulate similar logic with raw pointers and works very similar to raw pointers. The biggest difference is smart pointers can automatically release the target memory in the appropriate timing. And we don't need to worry about the memory leak even if we did not explicitly release the pointers.
+			if (found) {
+				std::unique_ptr<EmployeeWage> ptr(new EmployeeWage(emp[i].name, salary));
+				ptr->rangeValidator();
+				if (emp.checksin(emp[i].id)) {
+					activeEmp += ptr.get();
+				}
+				else {
+					throw std::string("Invalid SIN");
+				}
+				ptr.reset();
+			}
+In part-2 we upgraded the writeRaw() function into writeSmart() with only slightly changes. We change the raw pointer into smart pointer and the std::unique_ptr<EmpolyeeWage> ptr can perfectly do the same job and not worry about memory release when exception encountered. 
