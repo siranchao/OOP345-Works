@@ -1,0 +1,37 @@
+Name: Siran Cao
+email: scao34@myseneca.ca
+ID: 159235209
+Date: 4/4/2022
+
+
+1. was there any benefit from using binary files in this workshop?
+
+There are many benfit using binary file in c++ program especially when we dealing with mass amount of data, and sometimes these data are not encoded into string or any human readable formats (like image, videos etc.) then it require to use binary mode to access these files. And if we want to direct access to the file, means write and read at the same time, we cannot use text file and have to use binary. 
+
+There are many other advantages of saving data in binary form: Stores the data in binary form can be either processed sequentially or randomly. No delimiters are used for a line. No internal translation takes place. Most importantly, binary data takes less space to store data. For example, the integer 1234 occupies 2 bytes in memory.
+
+In general, if you need a portable text encoding, you should access files in binary mode and do interpretation yourself, or use a custom library that would do it for you.
+
+
+2. why would be important to bind a function to its arguments, and how was it useful in this workshop
+Sometimes we need to manipulate the operation of a function according to the need, i.e changing some arguments to default etc. Predefining a function to have default arguments restricts the versatility of a function and forces us to use the default arguments and that too with similar value each time. From C++11 onwards, the introduction of bind function has made this task easier. Bind function with the help of placeholders, helps to manipulate the position and number of values to be used by the function and modifies the function according to the desired output.
+
+auto computeAvg = std::bind(computeAvgFactor, _1, p_indices[1], total_items, _2);
+auto computeVar = std::bind(computeVarFactor, _1, p_indices[1], total_items, std::ref(avg), _2);
+for (int i = 0; i < num_threads; i++) {
+	process1.push_back(std::thread(computeAvg, &data[p_indices[i]], std::ref(averages[i])));
+}
+In our workshop, the method can be perfectly applied in the functor. Here we can see, we bind the computeAvgFactor() function with two default aruguments: p_indices[1], total_items. That means no matter how and where to call this function, these two arguments are always settled as default. And the placeholder _1, _2 indicates these arguments are current uncertain and needs to be filled in the later function calling. This mehod saves time for programmer when we are using certain functions many time in different places. And avoid potiental errors.
+
+
+
+3. the advantages of using multiple threads, and how did you accomplished multi-threading in this workshop
+
+As we can see from the program output, the multi-threading computing is much faster than singel threading. And the more threads we use, the faster the program will be espeically when handing mass amount of data. To accomplish multi-threading in the workshop, we implement 4 major steps:
+1).we have to saprate the long data list into many parts, and each part will be computed by one thread. Therefore, we prepared several arrays like averages, variances to store all the calcualted data from different threads.
+2).we also need to aware the indices of each processing range. For example: if we are processiing 500,000 items with 2 threads. The processing range of each thread is [0, 250,000] and [250,001, 500,000]
+3).then allocate a vector<thread> to contain and manage multiple threads, and create each thread by calling binded functions. And push back each created thread into the containter.
+4).last we have to iterate the vector to make sure every thread is properly joined to the main thread. and also update the saparated numbers into our final numbers.
+
+
+
