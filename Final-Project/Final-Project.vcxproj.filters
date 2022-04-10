@@ -21,7 +21,10 @@
     <ClCompile Include="Station.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ms1.cpp">
+    <ClCompile Include="CustomerOrder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ms2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -30,6 +33,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Station.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomerOrder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

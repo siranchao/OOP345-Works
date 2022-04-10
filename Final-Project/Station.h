@@ -6,6 +6,7 @@
 // I confirm that I am the only author of this file
 //   and the content was created entirely by me.
 
+#pragma once
 #include <string>
 #ifndef SDDS_STATION_H
 #define SDDS_STATION_H
@@ -20,11 +21,11 @@ namespace sdds {
 
 		static size_t m_widthField;
 		static size_t id_generator;
-
 	public:
 		Station();
 		virtual ~Station();
 		Station(const std::string& record);
+
 		const std::string& getItemName() const;
 		size_t getNextSerialNumber();
 		size_t getQuantity() const;
