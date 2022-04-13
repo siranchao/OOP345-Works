@@ -7,7 +7,9 @@
 //   and the content was created entirely by me.
 
 #include <deque>
+#include <vector>
 #include <exception>
+#include <algorithm>
 #include <iostream>
 #include <iomanip>
 #include "CustomerOrder.h"
@@ -60,7 +62,6 @@ namespace sdds {
          m_name = src.m_name;
          m_product = src.m_product;
          m_cntItem = src.m_cntItem;
-
          src.m_itemList = nullptr;
          src.m_cntItem = 0;
       }
@@ -83,36 +84,46 @@ namespace sdds {
    }
 
    bool CustomerOrder::isItemFilled(const std::string& itemName)const {
-      size_t index{};
       bool found = false;
-      for (size_t i = 0; i < m_cntItem && !found; i++) {
+      bool val = true;
+      std::vector<Item*> matchedItems;
+      for (size_t i = 0; i < m_cntItem; i++) {
          if (m_itemList[i]->m_itemName == itemName) {
             found = true;
-            index = i;
+            matchedItems.push_back(m_itemList[i]);
          }
       }
-      return found ? m_itemList[index]->m_isFilled : true;
+
+      //if item found
+      if (found) {
+         val = std::all_of(matchedItems.begin(), matchedItems.end(), [](const Item* ptr) {return ptr->m_handled == true; });
+      }
+
+      return val;
    }
 
    void CustomerOrder::fillItem(Station& station, std::ostream& os) {
-      bool found = false;
-      size_t index{};
-      for (size_t i = 0; i < m_cntItem && !found; i++) {
-         if (m_itemList[i]->m_itemName == station.getItemName()) {
-            found = true;
-            index = i;
-         }
-      }
+      bool flag = true;
+      for (size_t i = 0; i < m_cntItem && flag; i++) {
 
-      if (found && !m_itemList[index]->m_isFilled) {     
-         if (station.getQuantity() > 0) {
-            station.updateQuantity();
-            m_itemList[index]->m_isFilled = true;
-            m_itemList[index]->m_serialNum = station.getNextSerialNumber();
-            os << "    Filled " << m_name << ", " << m_product << " [" << station.getItemName() << "]" << std::endl;
-         }
-         else {
-            os << "    Unable to fill " << m_name << ", " << m_product << " [" << station.getItemName() << "]" << std::endl;
+         if (m_itemList[i]->m_itemName == station.getItemName() && !m_itemList[i]->m_handled) {
+            flag = false;
+            if (station.getQuantity() > 0) {
+               //fill the item
+               station.updateQuantity();
+               m_itemList[i]->m_isFilled = true;
+               m_itemList[i]->m_handled = true;
+               m_itemList[i]->m_serialNum = station.getNextSerialNumber();
+               os << "    Filled " << m_name << ", " << m_product << " [" << station.getItemName() << "]" << std::endl;
+            }
+            else {
+               for (size_t k = 0; k < m_cntItem; k++) {
+                  if (m_itemList[k]->m_itemName == station.getItemName() && !m_itemList[k]->m_handled) {
+                     m_itemList[k]->m_handled = true;
+                     os << "    Unable to fill " << m_name << ", " << m_product << " [" << station.getItemName() << "]" << std::endl;
+                  }
+               }
+            }
          }
       }
    }

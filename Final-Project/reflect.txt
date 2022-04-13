@@ -1,0 +1,110 @@
+Name: Siran Cao
+email: scao34@myseneca.ca
+ID: 159235209
+Date: 04/12/2022
+
+Reflection for OOP345 Final Project
+
+//////// 1. <Utilites.h> module ////////
+The purpose of the Utilities module is to create/provide a helper object to help the program extract tokens(strings) from a longer and mixed records.The instantiated Untilities object is able to extract single token based on delimieter and trim the token with empty space. Also this object has method to set length of widthField which can help us align the output width.
+
+
+
+//////// 2. <Station.h> module ////////
+The Sataion module is the base class for all the workstations. Each station contains some basic features such as m_id, m_name, m_desc and managing stock of items in the station.
+
+We can use the Untilities class as the helper object in the constructor of Station, since it can help the constructor extract tokens from .txt file and create a number of Stations.
+
+Also we should notice there are two class variables(or static variables) for Station class. They represent the variable declared for the class but not for its instances. Therefore every time we construct a object the id_generator should increment by one.
+		static size_t m_widthField;
+		static size_t id_generator;
+
+
+
+//////// 3. <CustomerOrder> module ////////
+This module is one of the essential parts in this project. It represents the order made by the customer and each order should contain a series of information like name and qty. And most importantly the CustomerOrder has a two-diamenional array, or we can called a array of pointers. 		
+		Item** m_itemList{};
+This array contains a list of Item pointers, and each pointer points toward a dynamically allocated memory of Item type in heap. In order to make sure this class can work properly, we need to design the constructor of CustomerOrder carefully.
+   CustomerOrder::CustomerOrder(const std::string& str) {
+      if (str != "") {
+         //start reading string
+         Utilities helper{};
+         std::deque<std::string> items;
+         size_t next_pos = 0;
+         bool more = true;
+         while (more) {
+            items.push_back(helper.extractToken(str, next_pos, more));
+         }
+
+         m_name = items.front();
+         items.pop_front();
+         m_product = items.front();
+         items.pop_front();
+         if (m_widthField < helper.getFieldWidth())  m_widthField = helper.getFieldWidth();
+         m_cntItem = items.size();
+         m_itemList = new Item* [m_cntItem];
+         //initiate dynamic array
+         for (size_t i = 0; i < m_cntItem; i++) {
+            m_itemList[i] = new Item(items[i]);
+         }
+      }
+   }
+With the help of the untilities object, we're able to extact target string of order information. And we need to firstly specify the length of this two-diamential array. Then dynamically allocate memory for each Item based on Item constructor.
+
+
+In addition, the CustomerOrder is the module with external resources (dynamic array). Therefore we need to explicitly define rule of five: copy operation, move operation and destructor. In this case copy operation(constructor and operator) are disabled. And we allow move operation, but allways be careful with class with resources. We need to clean all the allocated memories before we move the new resouce into our current object.
+
+Lastly, the destructor has to be specificly outline to avoid memory leak. As we can see from the codes: each dynamically allocated Item needs to be delete by iteration. And then delete the whole array after each Item is destoried.
+   CustomerOrder::~CustomerOrder() {
+      for (size_t i = 0; i < m_cntItem; i++) {
+         delete m_itemList[i];
+      }
+      delete [] m_itemList;
+   }
+
+
+
+//////// 4. <Workstation.h> module ////////
+This module is the derived class of Station class. A workstation is bascially a station that is actively working. So it has all the methods of its base class and able to hold a container (deque) to store CustomerOrders on hand.
+   extern std::deque<CustomerOrder> g_pending;
+   extern std::deque<CustomerOrder> g_completed;
+   extern std::deque<CustomerOrder> g_incomplete;
+
+There are three global variable for the entire program. These three containers are used to store different customer orders as their name shows. In the begining all the orders are in the g_pending deque, and with the assemby line keeps running the finished order goes to g_completed and g_incomplete according to its status. But make sure we add the extern KEY WORD and define the extern variable in the .cpp file. Therefore other modules in the program can visit and use these deques.
+
+
+
+//////// 5. <LineManager.h> module ////////
+The LineManager module is the hardest and core module of the program. It represent the controller of the assemble line and manage the whole process of differenct workstations and all the orders. 
+		
+	LineManager(const std::string& file, const std::vector<Workstation*>& stations);
+
+The constructor read the fstream first and extract a list of record ready for identification. 
+Secondly, the constructor should able to identify active Station into Workstation by extracted strings
+Third, it is extreamly important to find out the first station in the line since the order we extract are all random.
+Assume we already have the full collection of active Workstation vector<Workstation*> m_activeLine, and each Workstation knows the address of next station. Here is the code I used to find out the first one
+         //find m_firstStation
+         for (auto& ele : m_activeLine) {
+            if (std::none_of(nexts.begin(), nexts.end(), [&](const std::string str) {return str == ele->getItemName(); })) {
+               m_firstStation = ele;
+            }
+         }
+         m_cntCustomerOrder = g_pending.size();
+
+Another trickly part of this module is to use standard algorithm to sort the Workstations. The ordinary std::sort() function only compare the value between elements, so it is often used in the sorting of integer or doubles. But here we cannot use the comparation logic here because each Workstation object knows its next station, and our job is to sorting the sequence based on this attribute.
+   void LineManager::reorderStations() {
+      std::vector<Workstation*> temp;
+      temp.push_back(m_firstStation);
+      while (temp.back()->getNextStation()) {
+         auto iter = std::find(m_activeLine.begin(), m_activeLine.end(), temp.back()->getNextStation());
+         temp.push_back(*iter);
+      }
+      m_activeLine = temp;
+   }
+
+Above code is my solution, the basic idea is find out the first station and put it into a temporary vector. And then searching Workstations by next last one's next address, and store them into the temp vector. And lastly copy all the elements from the temp.
+
+
+
+
+

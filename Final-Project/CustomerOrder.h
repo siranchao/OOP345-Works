@@ -17,6 +17,7 @@ namespace sdds {
 		std::string m_itemName;
 		size_t m_serialNum{ 0 };
 		bool m_isFilled{ false };
+		bool m_handled{ false };
 		Item(const std::string& src) : m_itemName{ src } {
 			//item constructor
 		};
