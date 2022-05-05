@@ -9,52 +9,6 @@ The assembly line in your solution consists of a set of workstations each of whi
 The project is divided into 3 milestones to help guide you through implementation, debugging and execution. This application is more complex than any one of the workshops and it is recommended that you plan your work accordingly.
 
 
-
-## Project Deadlines
-
-The deadlines for the project's milestones are on Saturday evenings at midnight EDT (see the schedule below).
-
-| Milestone | Date    |
-| --------- | ------- |
-| #1        | Mar 27  |
-| #2        | Apr 3   |
-| #3        | Apr  10 |
-
-
-All files that you submit (`*.h` and `*.cpp`) should contain the following comment at the top (with your information filled):
-```cpp
-// Name:
-// Seneca Student ID:
-// Seneca email:
-// Date of completion:
-//
-// I confirm that I am the only author of this file
-//   and the content was created entirely by me.
-```
-
-**Milestone #3** can be submitted after April 10 until April 20, with a penalty of 10% for each day late. After April 20 2022, the submission process is considered closed.
-
-- submissions received on Apr 11 2022 can receive **max 90%**;
-- submissions received on Apr 12 2022 can receive **max 80%**;
-- submissions received on Apr 13 2022 can receive **max 70%**;
-- submissions received on Apr 14 2022 can receive **max 60%**;
-- submissions received on Apr 15 2022 can receive **max 50%**;
-- submissions received on Apr 16 2022 can receive **max 40%**;
-- submissions received on Apr 17 2022 can receive **max 30%**;
-- submissions received on Apr 18 2022 can receive **max 20%**;
-- submissions received on Apr 19 2022 can receive **max 10%**;
-- submissions received on Apr 20 2022 can receive **max  0%**;
-
-
-**Submission of a working copy of this project is mandatory!** Students who don't submit a complete working project, cannot pass this course. A project is considered complete if all three milestones have been submitted before submission closes and the implementation follows the requirements.
-
-All of your source code, including externally linked variables, should be in the `sdds` namespace. Use class declarations in header files wherever appropriate.
-
-
-
-
-
-
 # Milestone 1
 
 ## `Utilities` and `Station` classes
