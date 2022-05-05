@@ -415,31 +415,3 @@ The tester module and input files are included in the repository. Do not modify 
 ## Sample Output
 
 Look in the file `ms3_output.txt` for the command line necessary to start the application and the expected output.
-
-
-#### Submission
-
-Create a **text** file named `reflect.txt`.  Add any comments you wish to make.
-
-Before the due date, upload to your matrix account the following files:
-- `Utilities.h`
-- `Utilities.cpp`
-- `Station.h`
-- `Station.cpp`
-- `CustomerOrder.h`
-- `CustomerOrder.cpp`
-- `Workstation.h`
-- `Workstation.cpp`
-- `LineManager.h`
-- `LineManager.cpp`
-- `reflect.txt`
-
-From a command prompt, execute the following command:
-
-```bash
-~profname.proflastname/submit 345_ms3
-```
-
-and follow the instructions.
-
-**A successful submission does not guarantee full credit!**
