@@ -116,22 +116,12 @@ The tester module and the input files are included in the repository. Do not mod
 Look in the file `ms1_output.txt` for the command line necessary to start the application and the expected output.
 
 #### Submission
-
 Before the due date, upload to your matrix account the following files:
 -  `Utilities.h`
 -  `Utilities.cpp`
 -  `Station.h`
 -  `Station.cpp`
 
-From a command prompt, execute the following command:
-
-```bash
-~profname.proflastname/submit 345_ms1
-```
-
-and follow the instructions.
-
-**A successful submission does not guarantee full credit!**
 
 
 
@@ -276,17 +266,6 @@ Before the due date, upload to your matrix account the following files:
 - `Station.cpp`
 - `CustomerOrder.h`
 - `CustomerOrder.cpp`
-
-From a command prompt, execute the following command:
-
-```bash
-~profname.proflastname/submit 345_ms2
-```
-
-and follow the instructions.
-
-**A successful submission does not guarantee full credit!**
-
 
 
 
